@@ -8,6 +8,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import controllers.UserMedsController;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainFrame extends JFrame {
 
@@ -17,7 +19,7 @@ public class MainFrame extends JFrame {
 	public MainFrame(UserMedsController usermedscont) throws HeadlessException {
 		Initialise();
 		welcomePanel =  new Welcome(usermedscont);
-		this.add(welcomePanel);
+		getContentPane().add(welcomePanel);
 	}
 	
 	private void Initialise(){
@@ -32,6 +34,12 @@ public class MainFrame extends JFrame {
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmNewUser = new JMenuItem("New User");
+		mntmNewUser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+			}
+		});
 		mnFile.add(mntmNewUser);
 		
 		JMenuItem mntmSelectUser = new JMenuItem("Select User");
