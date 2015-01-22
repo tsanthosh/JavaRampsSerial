@@ -1,9 +1,18 @@
 package controllers;
 
-public class Main {
+import views.MainFrame;
 
+public class Main {
+	
+	private static UserMedsController usermedscont;
+	private static MainFrame mainframe;
+	
 	public static void main(String[] args) {
-		System.out.println("Hello World");
+		
+		usermedscont = new UserMedsController();
+		mainframe = new MainFrame(usermedscont);
+		mainframe.setVisible(true);		
+		
 	}
 
 }
