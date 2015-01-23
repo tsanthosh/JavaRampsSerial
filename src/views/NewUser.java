@@ -22,18 +22,29 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import models.User;
+import java.util.Date;
 
 public class NewUser extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JDatePickerImpl datePicker;
+	private JTextField tfFirstName;
+	private JTextField tfLastName;
+	private JTextField tfMedicareId;
+	private JDatePickerImpl dpDateOfBirth;
 	private JButton btnSave;
 	private JButton btnReset;
-
+	private User userObj;
+	private UserMedsController usermedscont;
+	
 	public NewUser(UserMedsController usermedscont) {
+		Initialise();
+		this.usermedscont = usermedscont;
+	}
+	
+	public void Initialise(){
 		this.setSize(500,500);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -67,23 +78,23 @@ public class NewUser extends JPanel {
 		JLabel lblFirstName = new JLabel("First Name:");
 		add(lblFirstName, "6, 6");
 		
-		textField = new JTextField();
-		add(textField, "10, 6, left, default");
-		textField.setColumns(20);
+		tfFirstName = new JTextField();
+		add(tfFirstName, "10, 6, left, default");
+		tfFirstName.setColumns(20);
 		
 		JLabel lblLastName = new JLabel("Last Name:");
 		add(lblLastName, "6, 8");
 		
-		textField_1 = new JTextField();
-		add(textField_1, "10, 8, left, default");
-		textField_1.setColumns(20);
+		tfLastName = new JTextField();
+		add(tfLastName, "10, 8, left, default");
+		tfLastName.setColumns(20);
 		
 		JLabel lblMedicareId = new JLabel("Medicare Id:");
 		add(lblMedicareId, "6, 10");
 		
-		textField_2 = new JTextField();
-		add(textField_2, "10, 10, left, default");
-		textField_2.setColumns(20);
+		tfMedicareId = new JTextField();
+		add(tfMedicareId, "10, 10, left, default");
+		tfMedicareId.setColumns(20);
 		
 		JLabel lblDateOfBirth = new JLabel("Date of Birth:");
 		add(lblDateOfBirth, "6, 12");
@@ -96,15 +107,27 @@ public class NewUser extends JPanel {
 		p.put("text.month", "Month");
 		p.put("text.year", "Year");
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-		this.add(datePicker, "10, 12, left, default");
+		dpDateOfBirth = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		this.add(dpDateOfBirth, "10, 12, left, default");
 		
 		btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				userObj = new User(tfFirstName.getText(), tfLastName.getText(), tfMedicareId.getText(), (Date)dpDateOfBirth.getModel().getValue());
+				usermedscont.setUserObj(userObj);
+			}
+		});
 		add(btnSave, "6, 16");
 		
 		btnReset = new JButton("Reset");
-		add(btnReset, "10, 16, left, default");
-		
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tfFirstName.setText(null);
+				tfLastName.setText(null);
+				tfMedicareId.setText(null);
+			}
+		});
+		add(btnReset, "10, 16, left, default");		
 	}
 	
 	public class DateLabelFormatter extends AbstractFormatter {
