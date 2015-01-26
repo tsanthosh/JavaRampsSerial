@@ -21,10 +21,14 @@ import javax.swing.JTextField;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import models.User;
+
 import java.util.Date;
 
 public class NewUser extends JPanel {
@@ -33,7 +37,7 @@ public class NewUser extends JPanel {
 	private JTextField tfFirstName;
 	private JTextField tfLastName;
 	private JTextField tfMedicareId;
-	private JDatePickerImpl dpDateOfBirth;
+	private JDatePickerImpl dpDateOfBirth; 
 	private JButton btnSave;
 	private JButton btnReset;
 	private User userObj;
@@ -113,8 +117,8 @@ public class NewUser extends JPanel {
 		btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				userObj = new User(tfFirstName.getText(), tfLastName.getText(), tfMedicareId.getText(), (Date)dpDateOfBirth.getModel().getValue());
-				usermedscont.setUserObj(userObj);
+				userObj = new User(null, tfFirstName.getText(), tfLastName.getText(), tfMedicareId.getText(), (Date)dpDateOfBirth.getModel().getValue());
+				usermedscont.setUserObjData(userObj);
 			}
 		});
 		add(btnSave, "6, 16");

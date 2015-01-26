@@ -1,44 +1,49 @@
 package controllers;
 
-import models.MedSchedule;
+import java.util.List;
+
+import views.MainFrame;
+import views.Welcome;
+import models.Location;
 import models.Medication;
-import models.Schedule;
 import models.User;
 import models.DBConnector;
 
 public class UserMedsController {
 	
 	private User userObj;
-	private Schedule scheduleObj;
-	private Medication medicationObj;
-	private MedSchedule medscheduleObj;
+	private Location medlocation;
+	private Medication medication;
 	private DBConnector databaseObj;
+	private MainFrame mainframe;
 	
+	public UserMedsController(){
+		databaseObj = new DBConnector();
+	}
+	
+	public void start(){
+		mainframe = new MainFrame(this);
+		mainframe.setVisible(true);
+	}
+	
+	public void setUserObjData(User userObj) {
+		databaseObj.insertNewUser(userObj.getFirstName(), userObj.getLastName(), userObj.getMedicareId(), userObj.getDateOfBirth());
+		mainframe.getContentPane().removeAll();
+		mainframe.add(new Welcome());
+		mainframe.validate();
+	}
+	
+	public List<User> getUserObjsData(){
+		List<User> userObjects = databaseObj.RetrieveAllUsers();
+		return userObjects;
+	}
+
 	public User getUserObj() {
 		return userObj;
 	}
+
 	public void setUserObj(User userObj) {
 		this.userObj = userObj;
-		databaseObj = new DBConnector();
-		System.out.println(this.userObj.getDateOfBirth());
-	}
-	public Schedule getScheduleObj() {
-		return scheduleObj;
-	}
-	public void setScheduleObj(Schedule scheduleObj) {
-		this.scheduleObj = scheduleObj;
-	}
-	public Medication getMedicationObj() {
-		return medicationObj;
-	}
-	public void setMedicationObj(Medication medicationObj) {
-		this.medicationObj = medicationObj;
-	}
-	public MedSchedule getMedscheduleObj() {
-		return medscheduleObj;
-	}
-	public void setMedscheduleObj(MedSchedule medscheduleObj) {
-		this.medscheduleObj = medscheduleObj;
 	}
 	
 }

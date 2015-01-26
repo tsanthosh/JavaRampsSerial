@@ -9,7 +9,8 @@ public class User {
 	private String MedicareId;
 	private Date DateOfBirth;
 	
-	public User(String FirstName, String LastName, String MedicareId, Date DateOfBirth ){
+	public User(Integer UserId, String FirstName, String LastName, String MedicareId, Date DateOfBirth ){
+		this.UserId = UserId;
 		this.FirstName = FirstName;
 		this.LastName = LastName;
 		this.MedicareId = MedicareId;
