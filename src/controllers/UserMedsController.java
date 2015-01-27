@@ -2,9 +2,10 @@ package controllers;
 
 import java.util.List;
 
+import views.AddUserMeds;
 import views.MainFrame;
 import views.Welcome;
-import models.Location;
+import models.MedLocation;
 import models.Medication;
 import models.User;
 import models.DBConnector;
@@ -12,7 +13,7 @@ import models.DBConnector;
 public class UserMedsController {
 	
 	private User userObj;
-	private Location medlocation;
+	private MedLocation locationObj;
 	private Medication medication;
 	private DBConnector databaseObj;
 	private MainFrame mainframe;
@@ -44,6 +45,27 @@ public class UserMedsController {
 
 	public void setUserObj(User userObj) {
 		this.userObj = userObj;
+	}
+
+	public MedLocation getLocation() {
+		return locationObj;
+	}
+
+	public void setLocation(MedLocation location) {
+		this.locationObj = location;
+	}
+
+	public void setLocationData(MedLocation location) {
+		databaseObj.insertNewLocation(location.getLocationName(), location.getXaxis(), location.getYaxis(), location.getZaxis());
+		mainframe.getContentPane().removeAll();
+		mainframe.add(new Welcome());
+		mainframe.validate();
+	}
+	
+	public void addUserMeds(){
+		mainframe.getContentPane().removeAll();
+		mainframe.add(new AddUserMeds(this));
+		mainframe.validate();
 	}
 	
 }

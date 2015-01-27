@@ -1,26 +1,34 @@
 package views;
 
-import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import controllers.UserMedsController;
+import models.MedLocation;
+
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.factories.FormFactory;
+
 import javax.swing.JButton;
 
-public class NewLocationPanel extends Panel {
+public class NewLocationPanel extends JPanel {
 
 	private static final long serialVersionUID = -6709827740025104303L;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-
+	private JTextField tfLocationName;
+	private JTextField tfXAxis;
+	private JTextField tfYAxis;
+	private JTextField tfZAxis;
+	private UserMedsController usermedscont;
+	
 	public NewLocationPanel(UserMedsController userMedsCont) {
 		this.setSize(500, 500);
+		this.usermedscont = userMedsCont;
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
@@ -53,36 +61,52 @@ public class NewLocationPanel extends Panel {
 		JLabel lblLocationName = new JLabel("Location Name:");
 		add(lblLocationName, "6, 6");
 		
-		textField = new JTextField();
-		add(textField, "10, 6, left, default");
-		textField.setColumns(10);
+		tfLocationName = new JTextField();
+		add(tfLocationName, "10, 6, left, default");
+		tfLocationName.setColumns(10);
 		
 		JLabel lblXaxis = new JLabel("X Axis:");
 		add(lblXaxis, "6, 8");
 		
-		textField_1 = new JTextField();
-		add(textField_1, "10, 8, left, default");
-		textField_1.setColumns(10);
+		tfXAxis = new JTextField();
+		add(tfXAxis, "10, 8, left, default");
+		tfXAxis.setColumns(10);
 		
 		JLabel lblYAxis = new JLabel("Y Axis:");
 		add(lblYAxis, "6, 10");
 		
-		textField_2 = new JTextField();
-		add(textField_2, "10, 10, left, default");
-		textField_2.setColumns(10);
+		tfYAxis = new JTextField();
+		add(tfYAxis, "10, 10, left, default");
+		tfYAxis.setColumns(10);
 		
 		JLabel lblZAxis = new JLabel("Z Axis:");
 		add(lblZAxis, "6, 12");
 		
-		textField_3 = new JTextField();
-		add(textField_3, "10, 12, left, default");
-		textField_3.setColumns(10);
+		tfZAxis = new JTextField();
+		add(tfZAxis, "10, 12, left, default");
+		tfZAxis.setColumns(10);
 		
 		JButton btnSave = new JButton("Save");
 		add(btnSave, "6, 16");
+		btnSave.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MedLocation locationobj =  new MedLocation(null, tfLocationName.getText(), Float.parseFloat(tfXAxis.getText()), Float.parseFloat(tfYAxis.getText()), Float.parseFloat(tfZAxis.getText()));
+				usermedscont.setLocationData(locationobj);
+			}
+		});
 		
 		JButton btnReset = new JButton("Reset");
 		add(btnReset, "10, 16, left, default");
+		btnReset.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				tfLocationName.setText(null);
+				tfXAxis.setText(null);
+				tfYAxis.setText(null);
+				tfZAxis.setText(null);
+			}
+		});
 		
 	}
 }

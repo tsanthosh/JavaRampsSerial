@@ -9,6 +9,8 @@ import controllers.UserMedsController;
 
 import javax.swing.JTable;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UserDetails extends JPanel {
 
@@ -18,11 +20,12 @@ public class UserDetails extends JPanel {
 	private JTable table;
 	private JScrollPane scrollpane;
 	private JButton btnAddMedication;
+	private UserMedsController userMedsCont;
 
 	public UserDetails(UserMedsController usermedscont) {
 		
 		this.setSize(500,500);
-		
+		this.userMedsCont = usermedscont;
 		JLabel lblNewLabel = new JLabel("User:");
 		add(lblNewLabel);
 		
@@ -47,6 +50,11 @@ public class UserDetails extends JPanel {
 		add(scrollpane);
 		
 		btnAddMedication = new JButton("Add Medication");
+		btnAddMedication.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				userMedsCont.addUserMeds();
+			}
+		});
 		add(btnAddMedication);
 		
 		

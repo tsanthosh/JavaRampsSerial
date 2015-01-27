@@ -22,7 +22,7 @@ public class DBConnector {
 	
 	public DBConnector() {
         
-        this.url = "jdbc:mysql://50.22.153.228/tsanthosh_dispenser";
+        this.url = "jdbc:mysql://50.22.153.228:3306/tsanthosh_dispenser";
         this.user = "tsant_user";
         this.password = "talk2000";
         try {
@@ -80,5 +80,24 @@ public class DBConnector {
 		return userList;
 	}
 	
+	public void insertNewLocation(String LocationName, float XAxis, float YAxis, float ZAxis){
+		
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			prepStatement = con.prepareStatement("INSERT INTO  `tsanthosh_dispenser`.`location` (`LocationId` ,`LocationName` ,`XAxis` ,`YAxis` ,`ZAxis`) VALUES (NULL,?,?,?,?)");
+		    prepStatement.setString(1, LocationName);
+		    prepStatement.setFloat(2, XAxis);
+		    prepStatement.setFloat(3, YAxis);
+		    prepStatement.setFloat(4, ZAxis);
+		    prepStatement.executeUpdate();
+		    prepStatement.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{ if(prepStatement!=null) prepStatement.close(); } catch (SQLException se2) {}
+			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
+		}
+	}
 	
 }
