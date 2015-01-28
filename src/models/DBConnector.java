@@ -9,11 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 
 public class DBConnector {
 	
 	private Connection con = null;
-	private PreparedStatement prepStatement = null;
 	private Statement stmt = null;
 	private ResultSet rst = null;
 	private String url;
@@ -38,6 +38,7 @@ public class DBConnector {
 	
 	public void insertNewUser(String FirstName, String LastName, String MedicareId, Date DOB){
 		
+		PreparedStatement prepStatement = null;
 		try {
 			con = DriverManager.getConnection(url, user, password);
 			prepStatement = con.prepareStatement("INSERT INTO  `tsanthosh_dispenser`.`user` (`UserId` ,`FirstName` ,`LastName` ,`MedicareId` ,`DOB`) VALUES (NULL,?,?,?,?)");
@@ -82,6 +83,7 @@ public class DBConnector {
 	
 	public void insertNewLocation(String LocationName, float XAxis, float YAxis, float ZAxis){
 		
+		PreparedStatement prepStatement = null;
 		try {
 			con = DriverManager.getConnection(url, user, password);
 			prepStatement = con.prepareStatement("INSERT INTO  `tsanthosh_dispenser`.`location` (`LocationId` ,`LocationName` ,`XAxis` ,`YAxis` ,`ZAxis`) VALUES (NULL,?,?,?,?)");
@@ -99,5 +101,104 @@ public class DBConnector {
 			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
 		}
 	}
+
+	public List<MedLocation> RetrieveAllLocations() {
+		List<MedLocation> locationList = new ArrayList<MedLocation>();
+		
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			stmt = con.createStatement();
+			rst = stmt.executeQuery("SELECT * FROM location");
+			while (rst.next()){
+				MedLocation newlocation = new MedLocation (rst.getInt(1), rst.getString(2), rst.getFloat(3), rst.getFloat(4), rst.getFloat(5));
+				locationList.add(newlocation);
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{ if(stmt!=null) stmt.close(); } catch (SQLException se2) {}
+			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
+		}
+		
+		return locationList;
+	}
 	
+	public Integer insertNewMedication(String brandName, int locationId){
+		
+		PreparedStatement prepStatement = null;
+		ResultSet rs = null;
+		int medicationId = 0;
+		try {
+			
+			con = DriverManager.getConnection(url, user, password);
+			prepStatement = con.prepareStatement("INSERT INTO  `tsanthosh_dispenser`.`medication` (`MedicationId` ,`BrandName` ,`LocationId`) VALUES (NULL,?,?)", Statement.RETURN_GENERATED_KEYS);
+		    prepStatement.setString(1, brandName);
+		    prepStatement.setFloat(2, locationId);
+		    prepStatement.executeUpdate();
+		    rs = prepStatement.getGeneratedKeys();
+			if (rs.next()){
+			    medicationId = rs.getInt(1);
+			}
+		    prepStatement.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{ if(prepStatement!=null) prepStatement.close(); } catch (SQLException se2) {}
+			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
+		}
+		
+		return medicationId;
+	}
+
+	public void insertNewMedSchedule(Integer userId, Integer medicationId,
+			Time schedule1, Time schedule2, Time schedule3, Time schedule4,
+			Time schedule5) {
+		PreparedStatement prepStatement = null;
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			prepStatement = con.prepareStatement("INSERT INTO  `tsanthosh_dispenser`.`medschedule` (`MedScheduleId` ,`UserId` ,`MedicationId` ,`Schedule1` ,`Schedule2` ,`Schedule3` ,`Schedule4` ,`Schedule5`) VALUES (NULL,?,?,?,?,?,?,?)");
+		    prepStatement.setInt(1, userId);
+		    prepStatement.setInt(2, medicationId);
+		    prepStatement.setTime(3, schedule1);
+		    prepStatement.setTime(4, schedule2);
+		    prepStatement.setTime(5, schedule3);
+		    prepStatement.setTime(6, schedule4);
+		    prepStatement.setTime(7, schedule5);
+		    prepStatement.executeUpdate();
+		    prepStatement.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{ if(prepStatement!=null) prepStatement.close(); } catch (SQLException se2) {}
+			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
+		}
+	}
+
+	public List<MedSchedule> getMedScheduleData(int userId) {
+		List<MedSchedule> userList = new ArrayList<MedSchedule>();
+		PreparedStatement prepStatement = null;
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			prepStatement = con.prepareStatement("SELECT * FROM  `medschedule` WHERE UserId=?");
+		    prepStatement.setInt(1, userId);
+		    rst = prepStatement.executeQuery();
+			while (rst.next()){
+				User newUser = new User (rst.getInt(1), rst.getString(2), rst.getString(3), rst.getString(4), rst.getDate(5));
+				userList.add(newUser);
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{ if(stmt!=null) stmt.close(); } catch (SQLException se2) {}
+			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
+		}
+		
+		return userList;
+	}
 }

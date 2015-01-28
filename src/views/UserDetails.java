@@ -44,11 +44,6 @@ public class UserDetails extends JPanel {
 		add(mediField);
 		mediField.setColumns(10);
 		
-		table = new JTable();
-		scrollpane = new JScrollPane(table);
-		//table.setFillsViewportHeight(true);
-		add(scrollpane);
-		
 		btnAddMedication = new JButton("Add Medication");
 		btnAddMedication.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -57,7 +52,10 @@ public class UserDetails extends JPanel {
 		});
 		add(btnAddMedication);
 		
-		
+		table = new JTable();
+		scrollpane = new JScrollPane(table);
+		//table.setFillsViewportHeight(true);
+		add(scrollpane);
 	}
 
 }

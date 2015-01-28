@@ -1,12 +1,13 @@
 package controllers;
 
+import java.sql.Time;
 import java.util.List;
 
 import views.AddUserMeds;
 import views.MainFrame;
+import views.UserDetails;
 import views.Welcome;
 import models.MedLocation;
-import models.Medication;
 import models.User;
 import models.DBConnector;
 
@@ -14,7 +15,6 @@ public class UserMedsController {
 	
 	private User userObj;
 	private MedLocation locationObj;
-	private Medication medication;
 	private DBConnector databaseObj;
 	private MainFrame mainframe;
 	
@@ -67,5 +67,29 @@ public class UserMedsController {
 		mainframe.add(new AddUserMeds(this));
 		mainframe.validate();
 	}
+
+	public List<MedLocation> getLocationObjsData() {
+		List<MedLocation> locationObjects = databaseObj.RetrieveAllLocations();
+		return locationObjects;
+	}
+
+	public void addUserMedsData(String brandName, String locationId,
+			Time schedule1, Time schedule2, Time schedule3, Time schedule4,
+			Time schedule5) {
+		//Update Medication & retrieve MedicationID
+		int medicationId = databaseObj.insertNewMedication(brandName, Integer.parseInt(locationId));
+		//Update MedSchedule
+		databaseObj.insertNewMedSchedule(this.getUserObj().getUserId(), medicationId, schedule1, schedule2, schedule3, schedule4, schedule5);
+		//Change Panel
+		mainframe.getContentPane().removeAll();
+		mainframe.add(new UserDetails(this));
+		mainframe.validate();
+	}
 	
+	public void getUserMedsData(){
+		//Retrieve MedSchedule Objects for User
+		databaseObj.getMedScheduleData(this.getUserObj().getUserId());
+		//Retrieve Medication Objects for each MedSchedule Objects
+		
+	}
 }

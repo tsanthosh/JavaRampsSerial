@@ -11,5 +11,29 @@ public class Medication {
 		this.LocationId = LocationId;
 	}
 
+	public Integer getMedicationId() {
+		return MedicationId;
+	}
+
+	public void setMedicationId(Integer medicationId) {
+		MedicationId = medicationId;
+	}
+
+	public String getBrandName() {
+		return BrandName;
+	}
+
+	public void setBrandName(String brandName) {
+		BrandName = brandName;
+	}
+
+	public Integer getLocationId() {
+		return LocationId;
+	}
+
+	public void setLocationId(Integer locationId) {
+		LocationId = locationId;
+	}
+
 }
 

@@ -25,4 +25,84 @@ public class MedSchedule {
 		this.Schedule5 = Schedule5;
 	}
 
+
+	public Integer getMedScheduleId() {
+		return MedScheduleId;
+	}
+
+
+	public void setMedScheduleId(Integer medScheduleId) {
+		MedScheduleId = medScheduleId;
+	}
+
+
+	public Integer getUserId() {
+		return UserId;
+	}
+
+
+	public void setUserId(Integer userId) {
+		UserId = userId;
+	}
+
+
+	public Integer getMedicationId() {
+		return MedicationId;
+	}
+
+
+	public void setMedicationId(Integer medicationId) {
+		MedicationId = medicationId;
+	}
+
+
+	public Time getSchedule1() {
+		return Schedule1;
+	}
+
+
+	public void setSchedule1(Time schedule1) {
+		Schedule1 = schedule1;
+	}
+
+
+	public Time getSchedule2() {
+		return Schedule2;
+	}
+
+
+	public void setSchedule2(Time schedule2) {
+		Schedule2 = schedule2;
+	}
+
+
+	public Time getSchedule3() {
+		return Schedule3;
+	}
+
+
+	public void setSchedule3(Time schedule3) {
+		Schedule3 = schedule3;
+	}
+
+
+	public Time getSchedule4() {
+		return Schedule4;
+	}
+
+
+	public void setSchedule4(Time schedule4) {
+		Schedule4 = schedule4;
+	}
+
+
+	public Time getSchedule5() {
+		return Schedule5;
+	}
+
+
+	public void setSchedule5(Time schedule5) {
+		Schedule5 = schedule5;
+	}
+
 }
