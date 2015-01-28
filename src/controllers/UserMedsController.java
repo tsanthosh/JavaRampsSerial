@@ -1,6 +1,7 @@
 package controllers;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 import views.AddUserMeds;
@@ -8,6 +9,8 @@ import views.MainFrame;
 import views.UserDetails;
 import views.Welcome;
 import models.MedLocation;
+import models.MedSchedule;
+import models.Medication;
 import models.User;
 import models.DBConnector;
 
@@ -88,8 +91,12 @@ public class UserMedsController {
 	
 	public void getUserMedsData(){
 		//Retrieve MedSchedule Objects for User
-		databaseObj.getMedScheduleData(this.getUserObj().getUserId());
+		List<MedSchedule> medScheduleList = databaseObj.getMedScheduleData(this.getUserObj().getUserId());
 		//Retrieve Medication Objects for each MedSchedule Objects
-		
+		List<Medication> medicationList = new ArrayList<Medication>();
+		for(MedSchedule d: medScheduleList){
+			Medication medication = databaseObj.getMedicationData(d.getMedicationId());
+			medicationList.add(medication);
+		}
 	}
 }

@@ -179,7 +179,7 @@ public class DBConnector {
 	}
 
 	public List<MedSchedule> getMedScheduleData(int userId) {
-		List<MedSchedule> userList = new ArrayList<MedSchedule>();
+		List<MedSchedule> medScheduleList = new ArrayList<MedSchedule>();
 		PreparedStatement prepStatement = null;
 		try {
 			con = DriverManager.getConnection(url, user, password);
@@ -187,8 +187,8 @@ public class DBConnector {
 		    prepStatement.setInt(1, userId);
 		    rst = prepStatement.executeQuery();
 			while (rst.next()){
-				User newUser = new User (rst.getInt(1), rst.getString(2), rst.getString(3), rst.getString(4), rst.getDate(5));
-				userList.add(newUser);
+				MedSchedule medSchedule = new MedSchedule (rst.getInt(1), rst.getInt(2), rst.getInt(3), rst.getTime(4), rst.getTime(5), rst.getTime(6), rst.getTime(7), rst.getTime(8));
+				medScheduleList.add(medSchedule);
 			}
 			stmt.close();
 			con.close();
@@ -199,6 +199,30 @@ public class DBConnector {
 			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
 		}
 		
-		return userList;
+		return medScheduleList;
+	}
+
+	public Medication getMedicationData(Integer medicationId) {
+		Medication medication;
+		PreparedStatement prepStatement = null;
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			prepStatement = con.prepareStatement("SELECT * FROM  `medication` WHERE medicationId=?");
+		    prepStatement.setInt(1, medicationId);
+		    rst = prepStatement.executeQuery();
+			while (rst.next()){
+				medication = new medication (rst.getInt(1), rst.getInt(2), rst.getInt(3), rst.getTime(4), rst.getTime(5), rst.getTime(6), rst.getTime(7), rst.getTime(8));
+				medScheduleList.add(medSchedule);
+			}
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try{ if(stmt!=null) stmt.close(); } catch (SQLException se2) {}
+			try{ if(con!=null) con.close(); } catch (SQLException se) { se.printStackTrace(); }
+		}
+		
+		return medScheduleList;
 	}
 }
