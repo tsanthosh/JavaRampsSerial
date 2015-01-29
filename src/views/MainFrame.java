@@ -34,9 +34,9 @@ public class MainFrame extends JFrame {
 	
 	private void Initialise(){
 		//Initialise Frame
-		this.setSize(600, 600);
-		this.setIconImage(null);
+		this.setSize(700, 500);
 		this.setTitle("My Dispenser");
+		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();

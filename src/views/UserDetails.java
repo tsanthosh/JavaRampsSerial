@@ -1,15 +1,20 @@
 package views;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 import controllers.UserMedsController;
 
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import models.MedLocation;
@@ -17,6 +22,7 @@ import models.Medication;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
 import java.awt.Dimension;
 
 public class UserDetails extends JPanel {
@@ -31,7 +37,7 @@ public class UserDetails extends JPanel {
 
 	public UserDetails(UserMedsController usermedscont) {
 		
-		this.setSize(600,600);
+		this.setSize(700,500);
 		this.userMedsCont = usermedscont;
 		JLabel lblNewLabel = new JLabel("User:");
 		add(lblNewLabel);
@@ -61,9 +67,9 @@ public class UserDetails extends JPanel {
 		
 		userMedsCont.getUserMedsData();
 		TableModel dataModel = new AbstractTableModel() {
-			public String[] columnNames = {"Brand Name", "Schedule 1", "Schedule 2", "Schedule 3", "Schedule 4", "Schedule 5", "Location"};
+			public String[] columnNames = {"Brand Name", "Schedule 1", "Schedule 2", "Schedule 3", "Schedule 4", "Schedule 5", "Location", "Dispense"};
 			private static final long serialVersionUID = 5645345126523101651L;
-			public int getColumnCount() { return 7; }
+			public int getColumnCount() { return 8; }
 			public String getColumnName(int col) { return columnNames[col]; }
 			public int getRowCount() { return userMedsCont.getMedScheduleList().size();}
 	        public Object getValueAt(int row, int col) { 
@@ -110,18 +116,108 @@ public class UserDetails extends JPanel {
 	        			}
 	        			value = locationName;
 	        			break;
+	        		case 8:
+	        			//final JButton button = new JButton("Dispense");
+                        //button.addActionListener(new ActionListener() {
+                       //     public void actionPerformed(ActionEvent arg0) {
+                        //    	
+                        //    }
+                        //});
+                        value =  "button";
+	        			break;
 	        	}
 	        	return value;
 	        }
 	      };
 		table = new JTable(dataModel);
-		table.setPreferredScrollableViewportSize(new Dimension(500, 500));
-		table.setRowSelectionAllowed(false);
-		table.setSize(new Dimension(600, 600));
+		table.getColumn("Brand Name").setMinWidth(150);
+		table.getColumn("Dispense").setCellRenderer(new ButtonRenderer());
+	    table.getColumn("Dispense").setCellEditor(new ButtonEditor(new JCheckBox()));
+		table.setPreferredScrollableViewportSize(new Dimension(650, 300));
+		//table.setRowSelectionAllowed(false);
 		scrollpane = new JScrollPane(table);
-		scrollpane.setSize(new Dimension(600, 600));
+		//scrollpane.setSize(new Dimension(600, 600));
 		//table.setFillsViewportHeight(true);
 		add(scrollpane);
 	}
-
 }
+
+class ButtonRenderer extends JButton implements TableCellRenderer {
+
+	private static final long serialVersionUID = -1075291424898382706L;
+
+	public ButtonRenderer() {
+	    setOpaque(true);
+	  }
+
+	  public Component getTableCellRendererComponent(JTable table, Object value,
+	      boolean isSelected, boolean hasFocus, int row, int column) {
+	    if (isSelected) {
+	      setForeground(table.getSelectionForeground());
+	      setBackground(table.getSelectionBackground());
+	    } else {
+	      setForeground(table.getForeground());
+	      setBackground(UIManager.getColor("Button.background"));
+	    }
+	    setText((value == null) ? "" : value.toString());
+	    return this;
+	  }
+	}
+
+class ButtonEditor extends DefaultCellEditor {
+
+	private static final long serialVersionUID = -757315571902140913L;
+
+	protected JButton button;
+
+	  private String label;
+
+	  private boolean isPushed;
+
+	  public ButtonEditor(JCheckBox checkBox) {
+	    super(checkBox);
+	    button = new JButton();
+	    button.setOpaque(true);
+	    button.addActionListener(new ActionListener() {
+	      public void actionPerformed(ActionEvent e) {
+	        fireEditingStopped();
+	      }
+	    });
+	  }
+
+	  public Component getTableCellEditorComponent(JTable table, Object value,
+	      boolean isSelected, int row, int column) {
+	    if (isSelected) {
+	      button.setForeground(table.getSelectionForeground());
+	      button.setBackground(table.getSelectionBackground());
+	    } else {
+	      button.setForeground(table.getForeground());
+	      button.setBackground(table.getBackground());
+	    }
+	    label = (value == null) ? "" : value.toString();
+	    button.setText(label);
+	    isPushed = true;
+	    return button;
+	  }
+
+	  public Object getCellEditorValue() {
+	    if (isPushed) {
+	      // 
+	      // 
+	      JOptionPane.showMessageDialog(button, label + ": Ouch!");
+	      // System.out.println(label + ": Ouch!");
+	    }
+	    isPushed = false;
+	    return new String(label);
+	  }
+
+	  public boolean stopCellEditing() {
+	    isPushed = false;
+	    return super.stopCellEditing();
+	  }
+
+	  protected void fireEditingStopped() {
+	    super.fireEditingStopped();
+	  }
+}
+
