@@ -171,4 +171,11 @@ public class UserMedsController {
 	public void setMedicationList(List<Medication> medicationList) {
 		this.medicationList = medicationList;
 	}
+	
+	
+
+	public void settxtReceive(String inputLine) {
+		// TODO Auto-generated method stub
+		
+	}
 }

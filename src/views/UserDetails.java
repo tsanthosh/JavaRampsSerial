@@ -9,6 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+import controllers.SerialPortController;
 import controllers.UserMedsController;
 
 import javax.swing.JTable;
@@ -25,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.JTextArea;
+
 public class UserDetails extends JPanel {
 
 	private static final long serialVersionUID = -2771266074548182417L;
@@ -34,11 +37,16 @@ public class UserDetails extends JPanel {
 	private JScrollPane scrollpane;
 	private JButton btnAddMedication;
 	private UserMedsController userMedsCont;
+	private JTextArea textArea;
+	private JScrollPane scrollPane;
+	private SerialPortController serialPortCont;
 
 	public UserDetails(UserMedsController usermedscont) {
 		
 		this.setSize(700,500);
 		this.userMedsCont = usermedscont;
+		//serialPortCont = new SerialPortController(this);
+		
 		JLabel lblNewLabel = new JLabel("User:");
 		add(lblNewLabel);
 		
@@ -71,6 +79,7 @@ public class UserDetails extends JPanel {
 			private static final long serialVersionUID = 5645345126523101651L;
 			public int getColumnCount() { return 8; }
 			public String getColumnName(int col) { return columnNames[col]; }
+			public boolean isCellEditable(int row, int col){ return true; }
 			public int getRowCount() { return userMedsCont.getMedScheduleList().size();}
 	        public Object getValueAt(int row, int col) { 
 	        	Object value = null;
@@ -117,13 +126,20 @@ public class UserDetails extends JPanel {
 	        			value = locationName;
 	        			break;
 	        		case 8:
-	        			//final JButton button = new JButton("Dispense");
-                        //button.addActionListener(new ActionListener() {
-                       //     public void actionPerformed(ActionEvent arg0) {
-                        //    	
-                        //    }
-                        //});
-                        value =  "button";
+	        			int medsid1 = userMedsCont.getMedScheduleList().get(row).getMedicationId();
+	        			Object locationName1 = null;
+	        			int locationId1 = 0;
+	        			for (Medication med : userMedsCont.getMedicationList()){
+	        				if (med.getMedicationId()==medsid1){
+	        					locationId1 = med.getLocationId();
+	        				}
+	        			}
+	        			for (MedLocation medLoc : userMedsCont.getMedLocationList()){
+	        				if (medLoc.getLocationId()==locationId1){
+	        					locationName1 = medLoc.getLocationName();
+	        				}
+	        			}
+	        			value = locationName1;
 	        			break;
 	        	}
 	        	return value;
@@ -132,13 +148,35 @@ public class UserDetails extends JPanel {
 		table = new JTable(dataModel);
 		table.getColumn("Brand Name").setMinWidth(150);
 		table.getColumn("Dispense").setCellRenderer(new ButtonRenderer());
-	    table.getColumn("Dispense").setCellEditor(new ButtonEditor(new JCheckBox()));
+	    table.getColumn("Dispense").setCellEditor(new ButtonEditor(new JCheckBox(), this));
 		table.setPreferredScrollableViewportSize(new Dimension(650, 300));
-		//table.setRowSelectionAllowed(false);
 		scrollpane = new JScrollPane(table);
-		//scrollpane.setSize(new Dimension(600, 600));
-		//table.setFillsViewportHeight(true);
 		add(scrollpane);
+		
+		scrollPane = new JScrollPane();
+		add(scrollPane);
+		
+		textArea = new JTextArea();
+		scrollPane.setViewportView(textArea);
+		textArea.setRows(5);
+		textArea.setColumns(70);
+	}
+
+	public JTextArea getTextArea() {
+		return textArea;
+	}
+
+	public void setTextArea(JTextArea textArea) {
+		this.textArea = textArea;
+	}
+
+	public void settxtReceive(String inputLine) {
+        textArea.append(inputLine+"\n");
+        textArea.setCaretPosition(textArea.getDocument().getLength());
+	}
+
+	public void sendText(String text) {
+		JOptionPane.showMessageDialog(this,text );
 	}
 }
 
@@ -148,9 +186,9 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
 
 	public ButtonRenderer() {
 	    setOpaque(true);
-	  }
+	}
 
-	  public Component getTableCellRendererComponent(JTable table, Object value,
+	public Component getTableCellRendererComponent(JTable table, Object value,
 	      boolean isSelected, boolean hasFocus, int row, int column) {
 	    if (isSelected) {
 	      setForeground(table.getSelectionForeground());
@@ -161,31 +199,30 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
 	    }
 	    setText((value == null) ? "" : value.toString());
 	    return this;
-	  }
 	}
+}
 
 class ButtonEditor extends DefaultCellEditor {
 
 	private static final long serialVersionUID = -757315571902140913L;
-
 	protected JButton button;
-
-	  private String label;
-
-	  private boolean isPushed;
-
-	  public ButtonEditor(JCheckBox checkBox) {
+	private String label;
+	private boolean isPushed;
+	
+	public ButtonEditor(JCheckBox checkBox, final UserDetails userDetails) {
 	    super(checkBox);
 	    button = new JButton();
 	    button.setOpaque(true);
 	    button.addActionListener(new ActionListener() {
 	      public void actionPerformed(ActionEvent e) {
-	        fireEditingStopped();
+	    	  userDetails.getTextArea().append("Dispensing..."+"/n");
+	    	  userDetails.sendText(button.getText());
+	    	  fireEditingStopped();
 	      }
 	    });
-	  }
+	}
 
-	  public Component getTableCellEditorComponent(JTable table, Object value,
+	public Component getTableCellEditorComponent(JTable table, Object value,
 	      boolean isSelected, int row, int column) {
 	    if (isSelected) {
 	      button.setForeground(table.getSelectionForeground());
@@ -198,26 +235,23 @@ class ButtonEditor extends DefaultCellEditor {
 	    button.setText(label);
 	    isPushed = true;
 	    return button;
-	  }
+	}
 
-	  public Object getCellEditorValue() {
+	public Object getCellEditorValue() {
 	    if (isPushed) {
-	      // 
-	      // 
 	      JOptionPane.showMessageDialog(button, label + ": Ouch!");
-	      // System.out.println(label + ": Ouch!");
 	    }
 	    isPushed = false;
 	    return new String(label);
-	  }
+	}
 
-	  public boolean stopCellEditing() {
+	public boolean stopCellEditing() {
 	    isPushed = false;
 	    return super.stopCellEditing();
-	  }
+	}
 
-	  protected void fireEditingStopped() {
+	protected void fireEditingStopped() {
 	    super.fireEditingStopped();
-	  }
+	}
 }
 
